@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Store | متجر سيرفر الفايف إم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: #030a16;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+            filter: brightness(0.35) contrast(1.1);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(3, 10, 22, 0.85), rgba(8, 27, 46, 0.75));
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(10, 25, 47, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 100;
+            margin-bottom: 40px; 
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: #00d4ff;
+            text-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+            text-decoration: none;
+        }
+
+        .discord-badge {
+            background: rgba(88, 101, 242, 0.15);
+            border: 1px solid rgba(88, 101, 242, 0.4);
+            color: #7289da;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+
+        .discord-badge:hover {
+            background: rgba(88, 101, 242, 0.3);
+            border-color: #5865F2;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(88, 101, 242, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex: 2;
+        }
+
+        .nav-links a {
+            color: #e2f1f8;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.15);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(8, 20, 38, 0.95);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            list-style: none;
+            min-width: 160px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: none;
+            backdrop-filter: blur(10px);
+            padding: 8px 0;
+            margin-top: 5px;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .dropdown-menu li a:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .header-left {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .cart-status {
+            font-size: 14px;
+            background: #00d4ff;
+            color: #030a16;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            user-select: none;
+        }
+
+        .cart-status:hover {
+            transform: scale(1.05);
+            background: #33e0ff;
+        }
+
+        .bottom-left-auth {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(10, 25, 47, 0.9);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 99;
+        }
+
+        .auth-title {
+            font-size: 12px;
+            color: #90b0c8;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .auth-buttons-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .auth-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auth-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        main {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 100px;
+        }
+
+        .hero {
+            text-align: center;
+            margin: 10px 0 30px 0;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .hero p {
+            color: #b0d0e8;
+            font-size: 16px;
+        }
+
+        .welcome-card {
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(10, 25, 47, 0.85);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-card h2 {
+            font-size: 28px;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .welcome-card p {
+            font-size: 16px;
+            color: #d0e5f5;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .welcome-features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(10, 25, 47, 0.75);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .product-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #00d4ff;
+            color: #030a16;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .product-title {
+            font-size: 20px;
+            margin: 10px 0;
+            color: #ffffff;
+        }
+
+        .product-price {
+            font-size: 22px;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-add {
+            width: 100%;
+            background: linear-gradient(45deg, #00d4ff, #0072ff);
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .rules-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .rule-accordion {
+            background: rgba(10, 25, 47, 0.85);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .rule-header {
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: rgba(0, 212, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .rule-header:hover {
+            background: rgba(0, 212, 255, 0.15);
+        }
+
+        .rule-header h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arrow-icon {
+            font-size: 16px;
+            color: #00d4ff;
+            transition: transform 0.3s ease;
+        }
+
+        .rule-accordion.open .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .rule-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 22px;
+            background: rgba(3, 10, 22, 0.5);
+        }
+
+        .rule-accordion.open .rule-body {
+            max-height: 2500px;
+            padding: 20px 22px;
+        }
+
+        .rule-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rule-list li {
+            font-size: 14px;
+            color: #d0e5f5;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-right: 3px solid #00d4ff;
+        }
+
+        .cart-summary-floating {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(10, 25, 47, 0.95);
+            padding: 10px 18px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            z-index: 99;
+            backdrop-filter: blur(8px);
+        }
+
+        .cart-summary-floating span {
+            font-size: 14px;
+            color: #a0c0d8;
+        }
+
+        .cart-summary-floating h3 {
+            font-size: 16px;
+            color: #00d4ff;
+            margin: 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 10px;
+            margin-top: 40px;
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-text {
+            color: #a0c0d8;
+            font-size: 14px;
+        }
+
+        .developer-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-modal {
+            background: rgba(10, 25, 47, 0.98);
+            border: 1px solid #00d4ff;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-items-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .remove-item-btn {
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #00d4ff;
+            color: #030a16;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <video class="bg-video" autoplay loop muted playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-cyber-city-with-neon-lights-at-night-42171-large.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+
+    <header>
+        <div class="logo-area">
+            <a href="#" class="logo">FUTURE STORE ⚡</a>
+            <a href="https://discord.gg/k3dGSMhjj" target="_blank" rel="noopener noreferrer" class="discord-badge">
+                <span>💬</span>  (Dis:Future)
+            </a>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a class="active" onclick="showCategory('home', this)">الرئيسية</a></li>
+            <li><a onclick="showCategory('vehicles', this)">المركبات</a></li>
+            <li><a onclick="showCategory('characters', this)">الشخصيات</a></li>
+            <li><a onclick="showRules(this)">قوانين السيرفر</a></li>
+            <li class="dropdown">
+                <a>المزيد ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a onclick="showCategory('customGangs', this)">عصابة خاصة</a></li>
+                    <li><a onclick="showCategory('priority', this)">أولوية الدخول</a></li>
+                    <li><a onclick="showCategory('realestate', this)">العقارات والبيوت</a></li>
+                    <li><a onclick="showCategory('plates', this)">لوحات السيارات</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="header-left">
+            <div class="cart-status" onclick="openCart()">🛒 السلة: <span id="cart-count">0</span></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero">
+            <h1 id="page-title">أهلاً بك في متجر Future cfw</h1>
+            <p id="page-desc">وجهتك الأولى والأفضل لتطوير تجربتك داخل السيرفر</p>
+        </div>
+
+        <div id="content-container"></div>
+
+        <div class="cart-summary-floating">
+            <span>إجمالي السلة:</span>
+            <h3><span id="total-price">0</span> ر.س</h3>
+        </div>
+    </main>
+
+    <div class="bottom-left-auth">
+        <span class="auth-title">تسجيل الدخول</span>
+        <div class="auth-buttons-group">
+            <button class="auth-btn" onclick="loginWithDiscord()">
+                ديسكورد
+            </button>
+            <button class="auth-btn" onclick="loginWithGoogle()">
+                جوجل
+            </button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-text">
+            جميع الحقوق محفوظة © 2026 | Powered by 
+            <a href="https://discord.gg/k3dGSMhjj" target="_blank" rel="noopener noreferrer" class="developer-link">Ahmad.Dev</a>
+        </p>
+    </footer> 
+
+    <div class="modal-overlay" id="cartModal">
+        <div class="cart-modal">
+            <div class="cart-header">
+                <h2>🛒 سلة التسوق</h2>
+                <button class="close-btn" onclick="closeCart()">✕</button>
+            </div>
+            <ul class="cart-items-list" id="cartItemsList"></ul>
+            <button class="checkout-btn" onclick="goToPaypal()">إتمام الشراء عبر PayPal 💳</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function sanitizeInput(str) {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        }
+
+        function loginWithDiscord() {
+            alert("يتطلب دمج OAuth2 Client ID وتوجيه المستخدم لموقع Discord للتسجيل.");
+        }
+
+        function loginWithGoogle() {
+            alert("يتطلب إعداد Google OAuth Client ID.");
+        }
+
+        const categoriesData = {
+            home: {
+                title: "أهلاً بك في متجر Future cfw ⚡",
+                desc: "سعداء بزيارتك! تصفح أقسامنا عبر القائمة العلويّة للحصول على أفضل الميزات المركبات والعصابات"
+            },
+            vehicles: {
+                title: "قسم بيع المركبات",
+                desc: "أفخم المركبات والسيارات الرياضية لسيرفرك",
+                products: [
+                    { 
+                        title: "سيارة Bugatti Chiron VIP", 
+                        price: 120, 
+                        tag: "فارهة", 
+                        desc: "سرعة عالية وتصميم خارق مع وزنية واقعية."
+                    }
+                ]
+            },
+            characters: {
+                title: "قسم الشخصيات والملابس",
+                desc: "حزم ملابس وشخصيات حصرياً",
+                products: [
+                    { 
+                        title: "بكج ملابس عصابات حديثة", 
+                        price: 50, 
+                        tag: "ملابس", 
+                        desc: "أكثر من 30 قطعة ملابس مخصصة للرول بلاي."
+                    }
+                ]
+            },
+            customGangs: {
+                title: "قسم العصابات الخاصة",
+                desc: "قم بتأسيس عصابتك الخاصة بكافة مميزاتها المخصصة داخل السيرفر",
+                products: [
+                    { 
+                        title: "حزمة العصابة الخاصة المكتملة", 
+                        price: 350, 
+                        tag: "عصابات", 
+                        desc: "مقر خاص + شعار مخصص + سلاح عصابة + 3 سيارات حصرية + رتب ديسكورد."
+                    }
+                ]
+            },
+            priority: { 
+                title: "أولوية الدخول (Queue Priority)", 
+                desc: "تخطى طوابير الانتظار وادخل السيرفر بسرعة عالية", 
+                products: [
+                    {
+                        title: "أولوية برونزية (Bronze)",
+                        price: 30,
+                        tag: "Level 1",
+                        desc: "تتخطى 30% من قائمة الانتظار الحالية."
+                    },
+                    {
+                        title: "أولوية فضية (Silver)",
+                        price: 60,
+                        tag: "Level 2",
+                        desc: "تتخطى 70% من قائمة الانتظار + رتبة مميزة بالديسكورد."
+                    },
+                    {
+                        title: "أولوية ذهبية (Gold VIP)",
+                        price: 100,
+                        tag: "Level 3",
+                        desc: "دخول فوري مباشر للسيرفر وبدون أي انتظار."
+                    }
+                ] 
+            },
+            realestate: { 
+                title: "قسم العقارات والمنازل", 
+                desc: "امتلك أفضل المنازل والمكاتب العقارية الخاصة بك", 
+                products: [
+                    {
+                        title: "منزل خاص فاره (Luxury Villa)",
+                        price: 150,
+                        tag: "منزل خاص",
+                        desc: "منزل مزود بكراج خاص ومسبح وانترير مخصص بالكامل."
+                    },
+                    {
+                        title: "مكتب عقاري خاص (Real Estate Office)",
+                        price: 250,
+                        tag: "مكتب تجاري",
+                        desc: "مكتب إدارة عقارات يخولك بيع وإدارة البيوت والأراضي في المدينة."
+                    }
+                ] 
+            },
+            plates: { 
+                title: "قسم لوحات السيارات المخصصة", 
+                desc: "ميز سيارتك الخاصة بأسماء وأرقام مميزة", 
+                products: [
+                    {
+                        title: "لوحة سيارة ثلاثية مميزة (VIP)",
+                        price: 40,
+                        tag: "لوحة",
+                        desc: "لوحة مكونة من 3 حروف أو أرقام فقط (مثال: 777 أو VIP)."
+                    },
+                    {
+                        title: "لوحة اسم مخصص (Custom Name)",
+                        price: 50,
+                        tag: "لوحة",
+                        desc: "كتابة اسمك الشخصي أو اسم عصابتك على لوحة السيارة."
+                    },
+                    {
+                        title: "لوحة ملونة بتصميم خاص",
+                        price: 35,
+                        tag: "لوحة",
+                        desc: "تغيير خلفية ونمط لون اللوحة إلى تصميم مخصص ملفت."
+                    }
+                ] 
+            }
+        };
+
+        const serverRules = {
+            generalDefs: [
+                "1- (RolePlay) : تقمص قصة الشخصية وإن لزم التغير في مسار الشخصية أثناء اللعب.",
+                "2- (IC) : داخل الشخصية، أي كل حديث وتصرف يخص الشخصية داخل عالم اللعبة.",
+                "3- (OOC) : خارج الشخصية، أي حديث وتصرف يخص اللاعب الحقيقي وليس شخصيته.",
+                "4- (VDM) : استخدام المركبة كسلاح لدهس أو قتل اللاعبين دون سبب مقنع.",
+                "5- (RDM) : القتل العشوائي للاعبين دون أي سبب منطقي أو تفاعل RolePlay سابق."
+            ],
+            generalRules: [
+                "1- يُمنع منعاً باتاً مخالفة أي من التعريفات المذكورة أعلاه.",
+                "2- يجب على الجميع الاحترام لخلق بيئة مناسبة للجميع.",
+                "3- في حال مخالفة شخص أمامك في سرقة أو سيناريو الخ، يجب عليك الاستمرار معاه ثم فتح تكت شكوى."
+            ],
+            crimeRules: [
+                "1- يمنع الخطف أو القيام بأي أعمال إجرامية داخل المناطق الآمنة.",
+                "2- يمنع خطف أكثر من 3 أشخاص."
+            ],
+            restaurantRules: [
+                "1- واجب على جميع المواطنين احترام موظفي المطاعم بشكل كامل.",
+                "2- يمنع منعاً باتاً بيع وجبات المطعم وأنت مواطن."
+            ]
+        };
+
+        function showCategory(catKey, element) {
+            const data = categoriesData[catKey];
+            if (!data) return;
+
+            document.getElementById('page-title').innerText = data.title;
+            document.getElementById('page-desc').innerText = data.desc;
+
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const container = document.getElementById('content-container');
+
+            if(catKey === 'home') {
+                container.innerHTML = `
+                    <div class="welcome-card">
+                        <h2>مرحباً بك في عالم Future CFW 🔥</h2>
+                        <p>
+                            نسعى دائماً لتقديم أفضل وأعلى مستويات تجربة الـ Roleplay في الوطن العربي. <br>
+                            من خلال متجرنا يمكنك تصفح واقتناء أفخم المركبات، العصابات الخاصة، والعقارات بكل سهولة وأمان.
+                        </p>
+                        <div class="welcome-features">
+                            <div class="feature-box">⚡ تسليم آلي وفوري</div>
+                            <div class="feature-box">🛡️ دعم فني على مدار 24 ساعة</div>
+                            <div class="feature-box">💳 طرق دفع آمنة ومشفرة</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '<div class="products-grid" id="products-container"></div>';
+            const grid = document.getElementById('products-container');
+
+            if(!data.products || data.products.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#90b0c8;">لا توجد منتجات متوفرة حالياً في هذا القسم.</p>';
+                return;
+            }
+
+            data.products.forEach(p => {
+                const title = sanitizeInput(p.title);
+                const tag = sanitizeInput(p.tag);
+                const desc = sanitizeInput(p.desc);
+                
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <span class="product-tag">${tag}</span>
+                        <div>
+                            <h3 class="product-title">${title}</h3>
+                            <p style="color: #90b0c8; margin-bottom: 15px; font-size: 14px;">${desc}</p>
+                        </div>
+                        <div>
+                            ${p.price > 0 ? `<div class="product-price">${p.price} ر.س</div><button class="btn-add" onclick="addToCart('${title}', ${p.price})">أضف الى السلة</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function showRules(element) {
+            document.getElementById('page-title').innerText = "قوانين ونظام سيرفر Future";
+            document.getElementById('page-desc').innerText = "يرجى القراءة بعناية لتجنب العقوبات والإبعاد عن السيرفر";
+
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const container = document.getElementById('content-container');
+            
+            let html = '<div class="rules-wrapper">';
+            
+            const createAccordion = (title, items) => {
+                let listItems = items.map(i => `<li>${sanitizeInput(i)}</li>`).join('');
+                return `
+                    <div class="rule-accordion">
+                        <div class="rule-header" onclick="toggleAccordion(this)">
+                            <h2>${title}</h2>
+                            <span class="arrow-icon">▼</span>
+                        </div>
+                        <div class="rule-body">
+                            <ul class="rule-list">${listItems}</ul>
+                        </div>
+                    </div>
+                `;
+            };
+
+            html += createAccordion("📌 المصطلحات والتعريفات العامة", serverRules.generalDefs);
+            html += createAccordion("📜 القوانين العامة للسيرفر", serverRules.generalRules);
+            html += createAccordion("⚔️ قوانين الإجرام والسرقات", serverRules.crimeRules);
+            html += createAccordion("🍔 قوانين المطاعم والخدمات", serverRules.restaurantRules);
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function toggleAccordion(header) {
+            const accordion = header.parentElement;
+            accordion.classList.toggle('open');
+        }
+
+        function addToCart(title, price) {
+            cart.push({ title, price });
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+            renderCartModal();
+        }
+
+        function updateCart() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('total-price').innerText = total;
+        }
+
+        function openCart() {
+            renderCartModal();
+            document.getElementById('cartModal').classList.add('active');
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').classList.remove('active');
+        }
+
+        function renderCartModal() {
+            const list = document.getElementById('cartItemsList');
+            list.innerHTML = '';
+            
+            if (cart.length === 0) {
+                list.innerHTML = '<li style="text-align:center; color:#90b0c8;">السلة فارغة حالياً.</li>';
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                list.innerHTML += `
+                    <li class="cart-item">
+                        <span>${sanitizeInput(item.title)} - ${item.price} ر.س</span>
+                        <button class="remove-item-btn" onclick="removeFromCart(${index})">إزالة</button>
+                    </li>
+                `;
+            });
+        }
+
+        function goToPaypal() {
+            if (cart.length === 0) {
+                alert("السلة فارغة!");
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            const paypalEmail = "your-paypal-email@example.com"; 
+            const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(paypalEmail)}&currency_code=SAR&amount=${total}&item_name=${encodeURIComponent("Future Store - متجر السيرفر")}`;
+            
+            window.open(paypalUrl, '_blank');
+        }
+
+        showCategory('home');
+    </script>
+</body>
+</html>
